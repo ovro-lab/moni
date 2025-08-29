@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>গোপন গেম</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            color: #4b5563;
+        }
+
+        #game-page {
+            text-align: center;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        #game-canvas {
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            touch-action: none;
+        }
+
+        #game-info {
+            margin-top: 1rem;
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: #4b5563;
+        }
+
+        .alert-message {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-page" class="flex flex-col items-center justify-center">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-4">গেমটি উপভোগ করুন</h1>
+        <canvas id="game-canvas" width="300" height="400" class="mt-4"></canvas>
+        <div id="game-info">স্কোর: 0</div>
+        <div id="game-status" class="alert-message"></div>
+    </div>
+    <script>
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const gameInfo = document.getElementById('game-info');
+        const gameStatus = document.getElementById('game-status');
+        let gameActive = true;
+        let score = 0;
+        let player = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 20,
+            velocity: 0,
+            gravity: 0.2
+        };
+
+        let eggs = [];
+        let eggInterval = 1000;
+        let lastEggTime = Date.now();
+
+        let clouds = [];
+        const CLOUD_COUNT = 3;
+
+        let flowers = [];
+        const FLOWER_COUNT = 15;
+
+        const TARGET_SCORE = 4;
+        const TAP_IMPULSE = -5;
+
+        function showStatusMessage(element, message, isError) {
+            element.textContent = message;
+            element.className = 'alert-message';
+            element.style.display = 'block';
+            if (isError) {
+                element.classList.add('alert-error');
+            } else {
+                element.classList.add('alert-success');
+            }
+        }
+
+        function drawBackground() {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87ceeb');
+            gradient.addColorStop(0.8, '#c3e2f5');
+            gradient.addColorStop(1, '#66c24c');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawFlowers() {
+            for (const flower of flowers) {
+                // ফুলের পাপড়ি আঁকা
+                ctx.fillStyle = '#ff69b4'; // গোলাপী রঙ
+                ctx.beginPath();
+                ctx.arc(flower.x + 3, flower.y - 3, 3, 0, Math.PI * 2);
+                ctx.arc(flower.x - 3, flower.y - 3, 3, 0, Math.PI * 2);
+                ctx.arc(flower.x, flower.y + 3, 3, 0, Math.PI * 2);
+                ctx.arc(flower.x - 3, flower.y + 3, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // ফুলের কেন্দ্র আঁকা
+                ctx.fillStyle = '#ffeb3b'; // হলুদ রঙ
+                ctx.beginPath();
+                ctx.arc(flower.x, flower.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawPlayer() {
+            ctx.font = '30px serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🐣', player.x, player.y);
+        }
+
+        function createEgg() {
+            eggs.push({
+                x: player.x,
+                y: player.y + 10,
+                speed: 1.5,
+            });
+        }
+
+        function drawEggs() {
+            for (const egg of eggs) {
+                ctx.font = '15px serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🥚', egg.x, egg.y);
+            }
+        }
+
+        function updateEggs() {
+            // ডিমগুলো আপডেট করা হচ্ছে
+            let newEggs = [];
+            for (const egg of eggs) {
+                egg.y += egg.speed;
+                if (egg.y < canvas.height) {
+                    newEggs.push(egg);
+                }
+            }
+            eggs = newEggs;
+        }
+
+        function createInitialClouds() {
+            clouds = [];
+            for (let i = 0; i < CLOUD_COUNT; i++) {
+                clouds.push({
+                    x: canvas.width * (i + 1) / (CLOUD_COUNT + 1) + Math.random() * 50,
+                    y: Math.random() * (canvas.height / 3),
+                    speed: 0.5 + Math.random(),
+                    size: 20 + Math.random() * 10
+                });
+            }
+        }
+
+        function createInitialFlowers() {
+            flowers = [];
+            for (let i = 0; i < FLOWER_COUNT; i++) {
+                flowers.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height * 0.8 + Math.random() * (canvas.height * 0.2),
+                    radius: 2 + Math.random() * 2
+                });
+            }
+        }
+
+        function drawClouds() {
+            for (const cloud of clouds) {
+                ctx.font = `${cloud.size}px serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('☁️', cloud.x, cloud.y);
+            }
+        }
+
+        function updateClouds() {
+            for (const cloud of clouds) {
+                cloud.x -= cloud.speed;
+            }
+        }
+
+        function updateGame() {
+            if (!gameActive) return;
+
+            drawBackground();
+            drawFlowers();
+
+            updateClouds();
+            drawClouds();
+
+            if (Date.now() - lastEggTime > eggInterval) {
+                createEgg();
+                lastEggTime = Date.now();
+            }
+
+            player.velocity += player.gravity;
+            player.y += player.velocity;
+
+            if (player.y + player.radius > canvas.height) {
+                gameActive = false;
+                if (score === TARGET_SCORE) {
+                    showStatusMessage(gameStatus, "সফল! গোপন স্কোর হয়েছে।", false);
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    showStatusMessage(gameStatus, "গেম ওভার। আবার চেষ্টা করুন।", true);
+                }
+            }
+
+            updateEggs();
+            drawEggs();
+            drawPlayer();
+
+            if (gameActive) {
+                requestAnimationFrame(updateGame);
+            }
+        }
+
+        function resetGame() {
+            score = 0;
+            player.y = canvas.height / 2;
+            player.velocity = 0;
+            gameInfo.textContent = `স্কোর: ${score}`;
+            gameStatus.style.display = 'none';
+            gameActive = true;
+            eggs = [];
+            createInitialClouds();
+            createInitialFlowers();
+            updateGame();
+        }
+
+        function handleTap(e) {
+            e.preventDefault();
+            if (!gameActive) {
+                resetGame();
+                return;
+            }
+            player.velocity = TAP_IMPULSE;
+            score++;
+            gameInfo.textContent = `স্কোর: ${score}`;
+        }
+
+        canvas.addEventListener('click', handleTap);
+        canvas.addEventListener('touchstart', handleTap);
+
+        window.onload = () => {
+            resetGame();
+        }
+    </script>
+</body>
+
+</html>
