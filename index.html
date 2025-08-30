@@ -5,9 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>গোপন অ্যাপ</title>
+
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        // শুধু প্রথমবার index.html এলে game.html এ পাঠাবে
+        if (!sessionStorage.getItem("visitedGame")) {
+            sessionStorage.setItem("visitedGame", "true");
+            window.location.href = "game.html";
+        }
+    </script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -115,291 +125,312 @@
     </style>
 </head>
 
+
+
+
 <body>
-    <!-- Main app container -->
-    <div id="app-container" class="container">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">গোপন মেসেজিং</h1>
-        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
-            <button id="show-send-btn" class="btn btn-primary">মেসেজ পাঠান</button>
-            <button id="show-view-btn" class="btn btn-secondary">মেসেজ দেখুন</button>
-        </div>
 
-        <div id="loading-message" class="alert-message alert-success" style="display: block;">অ্যাপটি লোড হচ্ছে...</div>
+    < <!-- Main app container -->
+        <div id="app-container" class="container">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">নিচে এসএমএস লিখে পাঠাও</h1>
+            <h2>
+                <p>মনি এই খানে তুমি এসএমএস লিখ🥰
+                </p>
+                <P>আমাকে এসএমএস পাঠাবা (name:moni)<br>দিবা আর
+                    (password:mehedi) দিবা
+                </P>
+                <p>আমার এসএমএস দেখতে হলে (name:mehedi)<br> (password:moni) দিবা তাহলে আমার এসএমএস দেখতে পাবা</p>
 
-        <div id="app-content" class="hidden">
-            <div id="send-message-form">
-                <div class="form-group">
-                    <label for="sender-name" class="form-label">আপনার নাম</label>
-                    <input type="text" id="sender-name" class="form-input" placeholder="আপনার নাম লিখুন" required>
-                </div>
-                <div class="form-group">
-                    <label for="sender-password" class="form-label">পাসওয়ার্ড</label>
-                    <input type="password" id="sender-password" class="form-input" placeholder="পাসওয়ার্ড লিখুন"
-                        required>
-                </div>
-                <div class="form-group">
-                    <label for="message-content" class="form-label">গোপন মেসেজ</label>
-                    <textarea id="message-content" class="form-input" rows="4" placeholder="আপনার গোপন মেসেজ লিখুন"
-                        required></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">মেসেজটি কখন মুছে যাবে?</label>
-                    <div class="flex items-center space-x-4">
-                        <input type="radio" id="mode-one-time" name="message-mode" value="one-time" class="mr-2"
-                            checked>
-                        <label for="mode-one-time" class="text-gray-700">একবার দেখলেই মুছে যাবে</label>
-                    </div>
-                    <div class="flex items-center space-x-4 mt-2">
-                        <input type="radio" id="mode-timed" name="message-mode" value="timed" class="mr-2">
-                        <label for="mode-timed" class="text-gray-700">দেখা হওয়ার এক ঘন্টা পর মুছে যাবে</label>
-                    </div>
-                </div>
-                <button id="send-btn" class="btn btn-primary">মেসেজ পাঠান</button>
-                <div id="send-status-message" class="alert-message"></div>
+                <pre>(note:tumi sms pathale ami uporer likha kete dibo)
+                
+            </pre>
+                <hr>
+                <p>miss you dear😥</p>
+                <hr>
+            </h2>
+            <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+                <button id="show-send-btn" class="btn btn-primary">মেসেজ পাঠান</button>
+                <button id="show-view-btn" class="btn btn-secondary">মেসেজ দেখুন</button>
             </div>
 
-            <div id="view-message-form" class="hidden">
-                <div class="form-group">
-                    <label for="viewer-name" class="form-label">প্রেরকের নাম</label>
-                    <input type="text" id="viewer-name" class="form-input" placeholder="প্রেরকের নাম লিখুন" required>
-                </div>
-                <div class="form-group">
-                    <label for="viewer-password" class="form-label">পাসওয়ার্ড</label>
-                    <input type="password" id="viewer-password" class="form-input" placeholder="পাসওয়ার্ড লিখুন"
-                        required>
-                </div>
-                <button id="view-btn" class="btn btn-primary">মেসেজ দেখুন</button>
-                <div id="view-status-message" class="alert-message"></div>
-                <div id="message-display" class="alert-message alert-success">
-                    <p class="font-bold">গোপন মেসেজ:</p>
-                    <div id="viewed-messages-container" class="mt-2"></div>
-                </div>
+            <div id="loading-message" class="alert-message alert-success" style="display: block;">অ্যাপটি লোড হচ্ছে...
             </div>
-            <p id="user-id-display" class="text-xs text-gray-500 mt-4 text-center"></p>
+
+            <div id="app-content" class="hidden">
+                <div id="send-message-form">
+                    <div class="form-group">
+                        <label for="sender-name" class="form-label">আপনার নাম</label>
+                        <input type="text" id="sender-name" class="form-input" placeholder="আপনার নাম লিখুন" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sender-password" class="form-label">পাসওয়ার্ড</label>
+                        <input type="password" id="sender-password" class="form-input" placeholder="পাসওয়ার্ড লিখুন"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-content" class="form-label">গোপন মেসেজ</label>
+                        <textarea id="message-content" class="form-input" rows="4" placeholder="আপনার গোপন মেসেজ লিখুন"
+                            required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">মেসেজটি কখন মুছে যাবে?</label>
+                        <div class="flex items-center space-x-4">
+                            <input type="radio" id="mode-one-time" name="message-mode" value="one-time" class="mr-2"
+                                checked>
+                            <label for="mode-one-time" class="text-gray-700">একবার দেখলেই মুছে যাবে</label>
+                        </div>
+                        <div class="flex items-center space-x-4 mt-2">
+                            <input type="radio" id="mode-timed" name="message-mode" value="timed" class="mr-2">
+                            <label for="mode-timed" class="text-gray-700">দেখা হওয়ার এক ঘন্টা পর মুছে যাবে</label>
+                        </div>
+                    </div>
+                    <button id="send-btn" class="btn btn-primary">মেসেজ পাঠান</button>
+                    <div id="send-status-message" class="alert-message"></div>
+                </div>
+
+                <div id="view-message-form" class="hidden">
+                    <div class="form-group">
+                        <label for="viewer-name" class="form-label">প্রেরকের নাম</label>
+                        <input type="text" id="viewer-name" class="form-input" placeholder="প্রেরকের নাম লিখুন"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="viewer-password" class="form-label">পাসওয়ার্ড</label>
+                        <input type="password" id="viewer-password" class="form-input" placeholder="পাসওয়ার্ড লিখুন"
+                            required>
+                    </div>
+                    <button id="view-btn" class="btn btn-primary">মেসেজ দেখুন</button>
+                    <div id="view-status-message" class="alert-message"></div>
+                    <div id="message-display" class="alert-message alert-success">
+                        <p class="font-bold">গোপন মেসেজ:</p>
+                        <div id="viewed-messages-container" class="mt-2"></div>
+                    </div>
+                </div>
+                <p id="user-id-display" class="text-xs text-gray-500 mt-4 text-center"></p>
+            </div>
         </div>
-    </div>
 
-    <!-- Firebase SDKs are loaded here -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        <!-- Firebase SDKs are loaded here -->
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+            import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+            import { getFirestore, collection, addDoc, query, where, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Canvas environment provides these variables automatically
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            // Canvas environment provides these variables automatically
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAiyMs9HolmJgcGkMyRYQDPayNhsZk1LCQ",
-            authDomain: "hiddenlove-007.firebaseapp.com",
-            projectId: "hiddenlove-007",
-            storageBucket: "hiddenlove-007.firebasestorage.app",
-            messagingSenderId: "84815500007",
-            appId: "1:84815500007:web:c6b33966ec48ebdbf94842",
-            measurementId: "G-51SVRFHRND"
-        };
+            const firebaseConfig = {
+                apiKey: "AIzaSyAiyMs9HolmJgcGkMyRYQDPayNhsZk1LCQ",
+                authDomain: "hiddenlove-007.firebaseapp.com",
+                projectId: "hiddenlove-007",
+                storageBucket: "hiddenlove-007.firebasestorage.app",
+                messagingSenderId: "84815500007",
+                appId: "1:84815500007:web:c6b33966ec48ebdbf94842",
+                measurementId: "G-51SVRFHRND"
+            };
 
-        let app, auth, db, userId;
+            let app, auth, db, userId;
 
-        // HTML elements
-        const showSendBtn = document.getElementById('show-send-btn');
-        const showViewBtn = document.getElementById('show-view-btn');
-        const sendMessageForm = document.getElementById('send-message-form');
-        const viewMessageForm = document.getElementById('view-message-form');
-        const sendBtn = document.getElementById('send-btn');
-        const viewBtn = document.getElementById('view-btn');
-        const senderNameInput = document.getElementById('sender-name');
-        const senderPasswordInput = document.getElementById('sender-password');
-        const messageContentInput = document.getElementById('message-content');
-        const sendStatusMessage = document.getElementById('send-status-message');
-        const viewerNameInput = document.getElementById('viewer-name');
-        const viewerPasswordInput = document.getElementById('viewer-password');
-        const viewStatusMessage = document.getElementById('view-status-message');
-        const messageDisplay = document.getElementById('message-display');
-        const viewedMessagesContainer = document.getElementById('viewed-messages-container');
-        const userIdDisplay = document.getElementById('user-id-display');
-        const loadingMessage = document.getElementById('loading-message');
-        const appContent = document.getElementById('app-content');
+            // HTML elements
+            const showSendBtn = document.getElementById('show-send-btn');
+            const showViewBtn = document.getElementById('show-view-btn');
+            const sendMessageForm = document.getElementById('send-message-form');
+            const viewMessageForm = document.getElementById('view-message-form');
+            const sendBtn = document.getElementById('send-btn');
+            const viewBtn = document.getElementById('view-btn');
+            const senderNameInput = document.getElementById('sender-name');
+            const senderPasswordInput = document.getElementById('sender-password');
+            const messageContentInput = document.getElementById('message-content');
+            const sendStatusMessage = document.getElementById('send-status-message');
+            const viewerNameInput = document.getElementById('viewer-name');
+            const viewerPasswordInput = document.getElementById('viewer-password');
+            const viewStatusMessage = document.getElementById('view-status-message');
+            const messageDisplay = document.getElementById('message-display');
+            const viewedMessagesContainer = document.getElementById('viewed-messages-container');
+            const userIdDisplay = document.getElementById('user-id-display');
+            const loadingMessage = document.getElementById('loading-message');
+            const appContent = document.getElementById('app-content');
 
-        // Functions to show/hide status messages
-        function showStatusMessage(element, message, isError) {
-            element.textContent = message;
-            element.className = 'alert-message';
-            element.style.display = 'block';
-            if (isError) {
-                element.classList.add('alert-error');
-            } else {
-                element.classList.add('alert-success');
+            // Functions to show/hide status messages
+            function showStatusMessage(element, message, isError) {
+                element.textContent = message;
+                element.className = 'alert-message';
+                element.style.display = 'block';
+                if (isError) {
+                    element.classList.add('alert-error');
+                } else {
+                    element.classList.add('alert-success');
+                }
             }
-        }
 
-        // Firebase initialization and authentication listener
-        async function setupFirebase() {
-            try {
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
+            // Firebase initialization and authentication listener
+            async function setupFirebase() {
+                try {
+                    app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
 
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        userIdDisplay.textContent = `ইউজার আইডি: ${userId}`;
-                        console.log(`Firebase connected. User ID: ${userId}`);
-                        loadingMessage.style.display = 'none';
-                        appContent.classList.remove('hidden');
-                        addEventListeners();
-                    } else {
-                        await signInAnonymously(auth);
+                    onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            userId = user.uid;
+                            userIdDisplay.textContent = `ইউজার আইডি: ${userId}`;
+                            console.log(`Firebase connected. User ID: ${userId}`);
+                            loadingMessage.style.display = 'none';
+                            appContent.classList.remove('hidden');
+                            addEventListeners();
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    });
+                } catch (error) {
+                    console.error("Firebase initialization or authentication failed:", error);
+                    loadingMessage.style.display = 'none';
+                    const errorMessage = "অ্যাপটি শুরু করতে সমস্যা হয়েছে। দয়া করে Firebase Security Rules এবং কনফিগারেশন যাচাই করুন।";
+                    showStatusMessage(loadingMessage, errorMessage, true);
+                }
+            }
+            setupFirebase();
+
+            // This function adds all the event listeners after the app is authenticated
+            function addEventListeners() {
+                showSendBtn.addEventListener('click', () => {
+                    showForm('send-message-form');
+                });
+
+                showViewBtn.addEventListener('click', () => {
+                    showForm('view-message-form');
+                });
+
+                // Message sending logic
+                sendBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    showStatusMessage(sendStatusMessage, "মেসেজ পাঠানো হচ্ছে...", false);
+                    sendBtn.disabled = true;
+
+                    const senderName = senderNameInput.value.trim();
+                    const password = senderPasswordInput.value.trim();
+                    const messageContent = messageContentInput.value.trim();
+                    const messageMode = document.querySelector('input[name="message-mode"]:checked').value;
+
+                    if (!senderName || !password || !messageContent) {
+                        showStatusMessage(sendStatusMessage, "দয়া করে সব তথ্য পূরণ করুন।", true);
+                        sendBtn.disabled = false;
+                        return;
+                    }
+
+                    try {
+                        const messagesCollectionRef = collection(db, `artifacts/${appId}/public/data/messages`);
+                        await addDoc(messagesCollectionRef, {
+                            senderName: senderName,
+                            password: password,
+                            message: messageContent,
+                            mode: messageMode,
+                            deletionTimestamp: null
+                        });
+
+                        showStatusMessage(sendStatusMessage, "মেসেজ সফলভাবে পাঠানো হয়েছে!", false);
+                        senderNameInput.value = '';
+                        senderPasswordInput.value = '';
+                        messageContentInput.value = '';
+                    } catch (error) {
+                        console.error("Error sending message:", error);
+                        showStatusMessage(sendStatusMessage, `মেসেজ পাঠাতে সমস্যা হয়েছে: ${error.message}`, true);
+                    } finally {
+                        sendBtn.disabled = false;
                     }
                 });
-            } catch (error) {
-                console.error("Firebase initialization or authentication failed:", error);
-                loadingMessage.style.display = 'none';
-                const errorMessage = "অ্যাপটি শুরু করতে সমস্যা হয়েছে। দয়া করে Firebase Security Rules এবং কনফিগারেশন যাচাই করুন।";
-                showStatusMessage(loadingMessage, errorMessage, true);
-            }
-        }
-        setupFirebase();
 
-        // This function adds all the event listeners after the app is authenticated
-        function addEventListeners() {
-            showSendBtn.addEventListener('click', () => {
-                showForm('send-message-form');
-            });
+                // Message viewing logic with the new one-hour timer
+                viewBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    showStatusMessage(viewStatusMessage, "মেসেজ খোঁজা হচ্ছে...", false);
+                    viewBtn.disabled = true;
 
-            showViewBtn.addEventListener('click', () => {
-                showForm('view-message-form');
-            });
+                    const viewerName = viewerNameInput.value.trim();
+                    const viewerPassword = viewerPasswordInput.value.trim();
 
-            // Message sending logic
-            sendBtn.addEventListener('click', async (e) => {
-                e.preventDefault();
-                showStatusMessage(sendStatusMessage, "মেসেজ পাঠানো হচ্ছে...", false);
-                sendBtn.disabled = true;
+                    if (!viewerName || !viewerPassword) {
+                        showStatusMessage(viewStatusMessage, "দয়া করে নাম এবং পাসওয়ার্ড দিন।", true);
+                        viewBtn.disabled = false;
+                        return;
+                    }
 
-                const senderName = senderNameInput.value.trim();
-                const password = senderPasswordInput.value.trim();
-                const messageContent = messageContentInput.value.trim();
-                const messageMode = document.querySelector('input[name="message-mode"]:checked').value;
+                    viewedMessagesContainer.innerHTML = '';
+                    messageDisplay.style.display = 'none';
 
-                if (!senderName || !password || !messageContent) {
-                    showStatusMessage(sendStatusMessage, "দয়া করে সব তথ্য পূরণ করুন।", true);
-                    sendBtn.disabled = false;
-                    return;
-                }
+                    try {
+                        const messagesCollectionRef = collection(db, `artifacts/${appId}/public/data/messages`);
+                        const q = query(messagesCollectionRef,
+                            where("senderName", "==", viewerName),
+                            where("password", "==", viewerPassword)
+                        );
 
-                try {
-                    const messagesCollectionRef = collection(db, `artifacts/${appId}/public/data/messages`);
-                    await addDoc(messagesCollectionRef, {
-                        senderName: senderName,
-                        password: password,
-                        message: messageContent,
-                        mode: messageMode,
-                        deletionTimestamp: null
-                    });
+                        const querySnapshot = await getDocs(q);
+                        let foundMessages = 0;
 
-                    showStatusMessage(sendStatusMessage, "মেসেজ সফলভাবে পাঠানো হয়েছে!", false);
-                    senderNameInput.value = '';
-                    senderPasswordInput.value = '';
-                    messageContentInput.value = '';
-                } catch (error) {
-                    console.error("Error sending message:", error);
-                    showStatusMessage(sendStatusMessage, `মেসেজ পাঠাতে সমস্যা হয়েছে: ${error.message}`, true);
-                } finally {
-                    sendBtn.disabled = false;
-                }
-            });
+                        if (querySnapshot.empty) {
+                            showStatusMessage(viewStatusMessage, "মেসেজটি পাওয়া যায়নি অথবা ভুল নাম/পাসওয়ার্ড দেওয়া হয়েছে।", true);
+                        } else {
+                            for (const docSnapshot of querySnapshot.docs) {
+                                const messageData = docSnapshot.data();
+                                const messageMode = messageData.mode || 'one-time';
+                                const oneHour = 3600000;
 
-            // Message viewing logic with the new one-hour timer
-            viewBtn.addEventListener('click', async (e) => {
-                e.preventDefault();
-                showStatusMessage(viewStatusMessage, "মেসেজ খোঁজা হচ্ছে...", false);
-                viewBtn.disabled = true;
+                                const docRef = doc(db, `artifacts/${appId}/public/data/messages`, docSnapshot.id);
 
-                const viewerName = viewerNameInput.value.trim();
-                const viewerPassword = viewerPasswordInput.value.trim();
-
-                if (!viewerName || !viewerPassword) {
-                    showStatusMessage(viewStatusMessage, "দয়া করে নাম এবং পাসওয়ার্ড দিন।", true);
-                    viewBtn.disabled = false;
-                    return;
-                }
-
-                viewedMessagesContainer.innerHTML = '';
-                messageDisplay.style.display = 'none';
-
-                try {
-                    const messagesCollectionRef = collection(db, `artifacts/${appId}/public/data/messages`);
-                    const q = query(messagesCollectionRef,
-                        where("senderName", "==", viewerName),
-                        where("password", "==", viewerPassword)
-                    );
-
-                    const querySnapshot = await getDocs(q);
-                    let foundMessages = 0;
-
-                    if (querySnapshot.empty) {
-                        showStatusMessage(viewStatusMessage, "মেসেজটি পাওয়া যায়নি অথবা ভুল নাম/পাসওয়ার্ড দেওয়া হয়েছে।", true);
-                    } else {
-                        for (const docSnapshot of querySnapshot.docs) {
-                            const messageData = docSnapshot.data();
-                            const messageMode = messageData.mode || 'one-time';
-                            const oneHour = 3600000;
-
-                            const docRef = doc(db, `artifacts/${appId}/public/data/messages`, docSnapshot.id);
-
-                            if (messageMode === 'one-time') {
-                                foundMessages++;
-                                const messageDiv = document.createElement('div');
-                                messageDiv.textContent = messageData.message;
-                                messageDiv.className = 'message-item';
-                                viewedMessagesContainer.appendChild(messageDiv);
-
-                                await deleteDoc(docRef);
-                            } else if (messageMode === 'timed') {
-                                if (messageData.deletionTimestamp && Date.now() > messageData.deletionTimestamp) {
-                                    await deleteDoc(docRef);
-                                    continue;
-                                } else {
+                                if (messageMode === 'one-time') {
                                     foundMessages++;
                                     const messageDiv = document.createElement('div');
                                     messageDiv.textContent = messageData.message;
                                     messageDiv.className = 'message-item';
                                     viewedMessagesContainer.appendChild(messageDiv);
 
-                                    if (!messageData.deletionTimestamp) {
-                                        await updateDoc(docRef, {
-                                            deletionTimestamp: Date.now() + oneHour
-                                        });
+                                    await deleteDoc(docRef);
+                                } else if (messageMode === 'timed') {
+                                    if (messageData.deletionTimestamp && Date.now() > messageData.deletionTimestamp) {
+                                        await deleteDoc(docRef);
+                                        continue;
+                                    } else {
+                                        foundMessages++;
+                                        const messageDiv = document.createElement('div');
+                                        messageDiv.textContent = messageData.message;
+                                        messageDiv.className = 'message-item';
+                                        viewedMessagesContainer.appendChild(messageDiv);
+
+                                        if (!messageData.deletionTimestamp) {
+                                            await updateDoc(docRef, {
+                                                deletionTimestamp: Date.now() + oneHour
+                                            });
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        if (foundMessages > 0) {
-                            messageDisplay.style.display = 'block';
-                            showStatusMessage(viewStatusMessage, "মেসেজ পাওয়া গেছে!", false);
-                        } else {
-                            showStatusMessage(viewStatusMessage, "কোনো নতুন মেসেজ পাওয়া যায়নি। মেয়াদ শেষ হওয়া মেসেজগুলো মুছে ফেলা হয়েছে।", true);
+                            if (foundMessages > 0) {
+                                messageDisplay.style.display = 'block';
+                                showStatusMessage(viewStatusMessage, "মেসেজ পাওয়া গেছে!", false);
+                            } else {
+                                showStatusMessage(viewStatusMessage, "কোনো নতুন মেসেজ পাওয়া যায়নি। মেয়াদ শেষ হওয়া মেসেজগুলো মুছে ফেলা হয়েছে।", true);
+                            }
                         }
+                    } catch (error) {
+                        console.error("Error viewing message:", error);
+                        showStatusMessage(viewStatusMessage, `মেসেজ দেখতে সমস্যা হয়েছে: ${error.message}`, true);
+                    } finally {
+                        viewBtn.disabled = false;
                     }
-                } catch (error) {
-                    console.error("Error viewing message:", error);
-                    showStatusMessage(viewStatusMessage, `মেসেজ দেখতে সমস্যা হয়েছে: ${error.message}`, true);
-                } finally {
-                    viewBtn.disabled = false;
-                }
-            });
-        }
+                });
+            }
 
-        function showForm(formId) {
-            sendMessageForm.classList.add('hidden');
-            viewMessageForm.classList.add('hidden');
-            document.getElementById(formId).classList.remove('hidden');
-            sendStatusMessage.style.display = 'none';
-            viewStatusMessage.style.display = 'none';
-            messageDisplay.style.display = 'none';
-        }
-    </script>
+            function showForm(formId) {
+                sendMessageForm.classList.add('hidden');
+                viewMessageForm.classList.add('hidden');
+                document.getElementById(formId).classList.remove('hidden');
+                sendStatusMessage.style.display = 'none';
+                viewStatusMessage.style.display = 'none';
+                messageDisplay.style.display = 'none';
+            }
+        </script>
 </body>
 
 </html>
